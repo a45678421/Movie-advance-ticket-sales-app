@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "122273461753",
+    "firebase_url": "https://u10127002-movie-default-rtdb.firebaseio.com",
+    "project_id": "u10127002-movie",
+    "storage_bucket": "u10127002-movie.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:122273461753:android:baccd93791a6853a5eb928",
+        "android_client_info": {
+          "package_name": "com.example.movie"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-0racvIM8OPKsMXqriMeLIFuHSwt63Z4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:122273461753:android:6a59b9fcefefa6535eb928",
+        "android_client_info": {
+          "package_name": "com.example.test_movie"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-0racvIM8OPKsMXqriMeLIFuHSwt63Z4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
