@@ -1,6 +1,8 @@
 import os
 import time
+import glob
 import requests
+import firebase_admin
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -8,12 +10,38 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from firebase_admin import credentials, initialize_app, storage, db
+import config  # Import config file
 
-# 初始化 Firebase Admin SDK
-cred = credentials.Certificate("u10127002-movie-firebase-adminsdk-kxpxj-a1e4466877.json")
-initialize_app(cred, {
-    'storageBucket': 'u10127002-movie.appspot.com',
-    'databaseURL': 'https://u10127002-movie-default-rtdb.firebaseio.com/'
+# 獲取當前檔案所在的目錄
+current_directory = os.path.dirname(os.path.abspath(__file__))
+
+# 查找當前目錄中的所有 JSON 憑證檔
+json_files = glob.glob(os.path.join(current_directory, "*.json"))
+
+if not json_files:
+    raise FileNotFoundError("沒有找到任何 JSON 憑證文件")
+
+# 使用第一個找到的 JSON 憑證檔
+cred = credentials.Certificate(json_files[0])
+
+# 從設定檔中讀取 Firebase 配置
+firebase_url = config.FIREBASE_URL
+firebase_storage_bucket = config.FIREBASE_STORAGE_BUCKET
+
+# 調試信息
+print(f"FIREBASE_URL: {firebase_url}")
+print(f"FIREBASE_STORAGE_BUCKET: {firebase_storage_bucket}")
+
+if not firebase_url:
+    raise ValueError("設定檔 'config.py' 中的 'FIREBASE_URL' 未設置")
+
+if not firebase_storage_bucket:
+    raise ValueError("設定檔 'config.py' 中的 'FIREBASE_STORAGE_BUCKET' 未設置")
+
+# 初始化 Firebase 應用
+firebase_admin.initialize_app(cred, {
+    'databaseURL': firebase_url,
+    'storageBucket': firebase_storage_bucket
 })
 
 # 設置 ChromeDriver 的路徑
@@ -49,22 +77,22 @@ def fetch_and_upload_movie(movie_id, movie_name):
     movie_title_english = title_area.find('h2').text
     release_date = title_area.find('time').text
 
-    movie_type = ""
-    movie_duration = ""
+    movie_type = "目前沒有"
+    movie_duration = "目前沒有"
 
     type_info = soup.find_all('tr')
     for tr in type_info:
         if '類型' in tr.text:
-            movie_type = tr.find_all('td')[1].text
+            movie_type = tr.find_all('td')[1].text if tr.find_all('td')[1].text else "目前沒有"
         if '片長' in tr.text:
-            movie_duration = tr.find_all('td')[1].text
+            movie_duration = tr.find_all('td')[1].text if tr.find_all('td')[1].text else "目前沒有"
 
     # 抓取所有段落的文字內容並處理 <br> 標籤
     bbs_article = soup.find('div', class_='bbsArticle')
     for br in bbs_article.find_all('br'):
         br.replace_with('\n')
     paragraphs = bbs_article.find_all('p')
-    full_text = "\n".join([p.text for p in paragraphs])
+    full_text = "\n".join([p.text for p in paragraphs]) if paragraphs else "目前沒有"
 
     # 提取圖片 URL
     img_tag = soup.find('img', {'alt': movie_title_chinese})
@@ -81,15 +109,15 @@ def fetch_and_upload_movie(movie_id, movie_name):
     blob = bucket.blob(f"images/{movie_title_english}.jpg")
     blob.upload_from_filename(local_image_path)
 
-    # 刪除本地文件
+    # 刪除本地檔
     os.remove(local_image_path)
 
-    # 打印抓取到的信息
+    # 列印抓取到的資訊
     print(f"電影名稱（中文）：{movie_title_chinese}")
     print(f"電影名稱（英文）：{movie_title_english}")
     print(f"{release_date}")
-    print(f"類型：{movie_type if movie_type else '未提供'}")
-    print(f"片長：{movie_duration if movie_duration else '未提供'}")
+    print(f"類型：{movie_type if movie_type else '目前沒有'}")
+    print(f"片長：{movie_duration if movie_duration else '目前沒有'}")
     print(f"描述：{full_text}")
     print(f"圖片網址：{img_url}")
     print(f"Uploading to: images/{movie_title_english}.jpg")
@@ -128,7 +156,7 @@ try:
             # 選擇當前電影
             select.select_by_value(option_value)
 
-            # 打印當前電影名稱
+            # 列印當前電影名稱
             print(f"電影：{option_text}")
 
             # 等待3秒以確保頁面加載完成

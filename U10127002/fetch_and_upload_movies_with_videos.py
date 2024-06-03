@@ -1,24 +1,53 @@
 import os
-import time
-import pandas as pd
 import re
+import time
+import glob
+import yt_dlp
+import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import yt_dlp
+import firebase_admin
 from firebase_admin import credentials, initialize_app, storage, db
+import config  # Import config file
 
-# 初始化 Firebase Admin SDK
-cred = credentials.Certificate("u10127002-movie-firebase-adminsdk-kxpxj-a1e4466877.json")
-initialize_app(cred, {
-    'storageBucket': 'u10127002-movie.appspot.com',
-    'databaseURL': 'https://u10127002-movie-default-rtdb.firebaseio.com/'
+
+# 獲取當前檔案所在的目錄
+current_directory = os.path.dirname(os.path.abspath(__file__))
+
+# 查找當前目錄中的所有 JSON 憑證檔
+json_files = glob.glob(os.path.join(current_directory, "*.json"))
+
+if not json_files:
+    raise FileNotFoundError("沒有找到任何 JSON 憑證文件")
+
+# 使用第一個找到的 JSON 憑證檔
+cred = credentials.Certificate(json_files[0])
+
+# 從設定檔中讀取 Firebase 配置
+firebase_url = config.FIREBASE_URL
+firebase_storage_bucket = config.FIREBASE_STORAGE_BUCKET
+
+# 調試信息
+print(f"FIREBASE_URL: {firebase_url}")
+print(f"FIREBASE_STORAGE_BUCKET: {firebase_storage_bucket}")
+
+if not firebase_url:
+    raise ValueError("設定檔 'config.py' 中的 'FIREBASE_URL' 未設置")
+
+if not firebase_storage_bucket:
+    raise ValueError("設定檔 'config.py' 中的 'FIREBASE_STORAGE_BUCKET' 未設置")
+
+# 初始化 Firebase 應用
+firebase_admin.initialize_app(cred, {
+    'databaseURL': firebase_url,
+    'storageBucket': firebase_storage_bucket
 })
 
 # 設置 EdgeDriver 的路徑
-driver = webdriver.Edge()
+driver = webdriver.Chrome()
 
 # 打開網頁
 url = "https://www.vscinemas.com.tw/vsweb/film/detail.aspx?id=7166"
@@ -28,7 +57,7 @@ driver.get(url)
 df = pd.DataFrame(columns=["電影名稱", "影片連結"])
 
 def download_and_upload_video(movie_name, video_url):
-    # 使用正则表达式替换非法字符
+    # 使用規則運算式替換非法字元
     safe_movie_name = re.sub(r'[\\/*?:"<>|]', '_', movie_name)
 
     # 設定 yt-dlp 下載選項
@@ -49,7 +78,7 @@ def download_and_upload_video(movie_name, video_url):
         blob = bucket.blob(f'videos/{safe_movie_name}.mp4')
         blob.upload_from_filename(f'{safe_movie_name}.mp4')
 
-        # 刪除本地影片文件
+        # 刪除本地影片檔
         os.remove(f'{safe_movie_name}.mp4')
 
         print(f"影片上傳到: {blob.public_url}")
@@ -60,11 +89,11 @@ def download_and_upload_video(movie_name, video_url):
         return None
 
 def sanitize_movie_name(movie_name):
-    # 使用正则表达式替换非法字符
+    # 使用規則運算式替換非法字元
     return re.sub(r'[.$\[\]#\/]', '_', movie_name)
 
 def save_to_firebase(movie_name, video_url):
-    # 清理電影名稱以去掉非法字符
+    # 清理電影名稱以去掉非法字元
     safe_movie_name = sanitize_movie_name(movie_name)
     ref = db.reference('MP4')
     ref.child(safe_movie_name).set({'連結': video_url})
@@ -97,7 +126,7 @@ try:
             # 選擇當前電影
             select.select_by_value(option_value)
 
-            # 打印當前電影名稱
+            # 列印當前電影名稱
             print(f"電影：{option_text}")
 
             # 等待3秒以確保頁面加載完成
@@ -124,7 +153,7 @@ try:
                 new_row = pd.DataFrame({"電影名稱": [option_text], "影片連結": ["無提供影片"]})
                 df = pd.concat([df, new_row], ignore_index=True)
 
-                # 保存無影片提供信息到 Firebase Realtime Database
+                # 保存無影片提供資訊到 Firebase Realtime Database
                 save_to_firebase(option_text, "無提供影片")
 
             # 模擬返回原來的網頁（重新加載原始網頁）
@@ -139,3 +168,5 @@ finally:
     # 將結果保存到 Excel
     df.to_excel("movies_and_videos.xlsx", index=False)
     print("結果已保存到 movies_and_videos.xlsx")
+
+

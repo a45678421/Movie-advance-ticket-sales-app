@@ -1,3 +1,9 @@
+import re
+import os
+import glob
+import time
+import firebase_admin
+from firebase_admin import credentials, db
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
@@ -5,15 +11,25 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
-import time
-import firebase_admin
-from firebase_admin import credentials, db
-import re
 
-# 初始化 Firebase Admin SDK
-cred = credentials.Certificate("C:/Users/sky.ho/Desktop/Andriod_local/u10127002-movie-firebase-adminsdk-kxpxj-a1e4466877.json")
+# 從設定檔中讀取 Firebase URL
+import config
+
+# 獲取當前檔案所在的目錄
+current_directory = os.path.dirname(os.path.abspath(__file__))
+
+# 查找當前目錄中的所有 JSON 憑證檔
+json_files = glob.glob(os.path.join(current_directory, "*.json"))
+
+if not json_files:
+    raise FileNotFoundError("沒有找到任何 JSON 憑證文件")
+
+# 使用第一個找到的 JSON 憑證檔
+cred = credentials.Certificate(json_files[0])
+
+# 初始化 Firebase 應用
 firebase_admin.initialize_app(cred, {
-    'databaseURL': 'https://u10127002-movie-default-rtdb.firebaseio.com/'
+    'databaseURL': config.FIREBASE_URL
 })
 
 def sanitize_key(key):
@@ -33,7 +49,7 @@ try:
     wait = WebDriverWait(driver, 10)
     select_element_f = wait.until(EC.presence_of_element_located((By.ID, "CinemaNameTWInfoF")))
 
-    # 選擇台北信義威秀影城 (TP)
+    # 選擇臺北信義威秀影城 (TP)
     select_f = Select(select_element_f)
     select_f.select_by_value("TP")
 
@@ -55,7 +71,7 @@ try:
             # 選擇當前影城
             select_s.select_by_value(option_value)
 
-            # 打印當前影城名稱
+            # 列印當前影城名稱
             print(f"影城：{option_text}")
 
             # 等待2秒以確保內容加載完成
@@ -71,7 +87,7 @@ try:
                 movie_name = tag.text.strip()
                 print(f"電影名稱：{movie_name}")
 
-                # 抓取與這個電影名稱相鄰的日期和時間信息
+                # 抓取與這個電影名稱相鄰的日期和時間資訊
                 parent = tag.find_element(By.XPATH, '..')
                 show_dates = parent.find_elements(By.CSS_SELECTOR, 'strong.col-xs-12.LangTW.RealShowDate')
                 session_times = parent.find_elements(By.CSS_SELECTOR, 'div.col-xs-12.SessionTimeInfo')
@@ -102,3 +118,5 @@ try:
 finally:
     # 關閉瀏覽器
     driver.quit()
+
+
