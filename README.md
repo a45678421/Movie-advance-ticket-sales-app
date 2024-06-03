@@ -52,7 +52,7 @@ dependencies {
 - **pip 版本:**
   ```bash
   pip3 --version
-  pip 24.0 from C:\Users\sky.ho\AppData\Roaming\Python\Python312\site-packages\pip (python 3.12)
+  pip 24.0 from ~\AppData\Roaming\Python\Python312\site-packages\pip (python 3.12)
   ```
 
 #### 需要安裝的 Python 包
