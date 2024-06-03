@@ -1,0 +1,33 @@
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="false">
+    <item android:drawable="@drawable/history0" android:duration="100" />
+    <item android:drawable="@drawable/history1" android:duration="100" />
+    <item android:drawable="@drawable/history2" android:duration="100" />
+    <item android:drawable="@drawable/history3" android:duration="100" />
+    <item android:drawable="@drawable/history4" android:duration="100" />
+    <item android:drawable="@drawable/history5" android:duration="100" />
+    <item android:drawable="@drawable/history6" android:duration="100" />
+    <item android:drawable="@drawable/history7" android:duration="100" />
+    <item android:drawable="@drawable/history8" android:duration="100" />
+    <item android:drawable="@drawable/history9" android:duration="100" />
+    <item android:drawable="@drawable/history10" android:duration="100" />
+    <item android:drawable="@drawable/history11" android:duration="100" />
+    <item android:drawable="@drawable/history12" android:duration="100" />
+    <item android:drawable="@drawable/history13" android:duration="100" />
+    <item android:drawable="@drawable/history14" android:duration="100" />
+    <item android:drawable="@drawable/history15" android:duration="100" />
+    <item android:drawable="@drawable/history16" android:duration="100" />
+    <item android:drawable="@drawable/history17" android:duration="100" />
+    <item android:drawable="@drawable/history18" android:duration="100" />
+    <item android:drawable="@drawable/history19" android:duration="100" />
+    <item android:drawable="@drawable/history20" android:duration="100" />
+    <item android:drawable="@drawable/history21" android:duration="100" />
+    <item android:drawable="@drawable/history22" android:duration="100" />
+    <item android:drawable="@drawable/history23" android:duration="100" />
+    <item android:drawable="@drawable/history24" android:duration="100" />
+    <item android:drawable="@drawable/history25" android:duration="100" />
+    <item android:drawable="@drawable/history26" android:duration="100" />
+    <item android:drawable="@drawable/history27" android:duration="100" />
+    <item android:drawable="@drawable/history28" android:duration="100" />
+
+</animation-list>

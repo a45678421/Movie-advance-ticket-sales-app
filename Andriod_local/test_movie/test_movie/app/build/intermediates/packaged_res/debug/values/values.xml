@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="purple">#6200EE</color>
+    <color name="white">#FFFFFFFF</color>
+    <string name="app_name">test_movie</string>
+    <string name="firebase_database_url" translatable="false">https://u10127002-movie-default-rtdb.firebaseio.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">122273461753</string>
+    <string name="google_api_key" translatable="false">AIzaSyC-0racvIM8OPKsMXqriMeLIFuHSwt63Z4</string>
+    <string name="google_app_id" translatable="false">1:122273461753:android:6a59b9fcefefa6535eb928</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyC-0racvIM8OPKsMXqriMeLIFuHSwt63Z4</string>
+    <string name="google_storage_bucket" translatable="false">u10127002-movie.appspot.com</string>
+    <string name="image_desc">電影圖片</string>
+    <string name="project_id" translatable="false">u10127002-movie</string>
+    <style name="Base.Theme.Test_movie" parent="Theme.Material3.DayNight.NoActionBar">
+        
+        
+    </style>
+    <style name="Theme.Test_movie" parent="Base.Theme.Test_movie"/>
+</resources>

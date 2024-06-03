@@ -18,16 +18,20 @@ public class MovieListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private MovieAdapter movieAdapter;
     private List<Movie> movieList;
+    private String nickname;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_list);
 
+        // 獲取從上個 Activity 傳遞過來的 Nickname
+        nickname = getIntent().getStringExtra("Nickname");
+
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         movieList = new ArrayList<>();
-        movieAdapter = new MovieAdapter(this, movieList);
+        movieAdapter = new MovieAdapter(this, movieList, nickname);  // 傳遞 nickname
         recyclerView.setAdapter(movieAdapter);
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Movie");
@@ -55,4 +59,3 @@ public class MovieListActivity extends AppCompatActivity {
         });
     }
 }
-

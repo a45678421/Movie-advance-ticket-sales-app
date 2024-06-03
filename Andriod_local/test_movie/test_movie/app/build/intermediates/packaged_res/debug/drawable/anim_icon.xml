@@ -1,0 +1,32 @@
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="false">
+    <item android:drawable="@drawable/logout0" android:duration="100" />
+    <item android:drawable="@drawable/logout1" android:duration="100" />
+    <item android:drawable="@drawable/logout2" android:duration="100" />
+    <item android:drawable="@drawable/logout3" android:duration="100" />
+    <item android:drawable="@drawable/logout4" android:duration="100" />
+    <item android:drawable="@drawable/logout5" android:duration="100" />
+    <item android:drawable="@drawable/logout6" android:duration="100" />
+    <item android:drawable="@drawable/logout7" android:duration="100" />
+    <item android:drawable="@drawable/logout8" android:duration="100" />
+    <item android:drawable="@drawable/logout9" android:duration="100" />
+    <item android:drawable="@drawable/logout10" android:duration="100" />
+    <item android:drawable="@drawable/logout11" android:duration="100" />
+    <item android:drawable="@drawable/logout12" android:duration="100" />
+    <item android:drawable="@drawable/logout13" android:duration="100" />
+    <item android:drawable="@drawable/logout14" android:duration="100" />
+    <item android:drawable="@drawable/logout15" android:duration="100" />
+    <item android:drawable="@drawable/logout16" android:duration="100" />
+    <item android:drawable="@drawable/logout17" android:duration="100" />
+    <item android:drawable="@drawable/logout18" android:duration="100" />
+    <item android:drawable="@drawable/logout19" android:duration="100" />
+    <item android:drawable="@drawable/logout20" android:duration="100" />
+    <item android:drawable="@drawable/logout21" android:duration="100" />
+    <item android:drawable="@drawable/logout22" android:duration="100" />
+    <item android:drawable="@drawable/logout23" android:duration="100" />
+    <item android:drawable="@drawable/logout24" android:duration="100" />
+    <item android:drawable="@drawable/logout25" android:duration="100" />
+    <item android:drawable="@drawable/logout26" android:duration="100" />
+    <item android:drawable="@drawable/logout27" android:duration="100" />
+
+</animation-list>

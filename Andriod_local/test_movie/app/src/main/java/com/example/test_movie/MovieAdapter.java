@@ -16,10 +16,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     private Context context;
     private List<Movie> movieList;
+    private String nickname;
 
-    public MovieAdapter(Context context, List<Movie> movieList) {
+    public MovieAdapter(Context context, List<Movie> movieList, String nickname) {
         this.context = context;
         this.movieList = movieList;
+        this.nickname = nickname;
     }
 
     @NonNull
@@ -38,8 +40,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         Picasso.get().load(movie.getImageUrl()).into(holder.imageView);
 
         View.OnClickListener listener = v -> {
-            Intent intent = new Intent(context, MainActivity.class);
+            Intent intent = new Intent(context, MovieDetails.class);
             intent.putExtra("movie_title_english", movie.getTitleEnglish());
+            intent.putExtra("Nickname", nickname); // 傳遞nickname
             context.startActivity(intent);
         };
 
@@ -68,6 +71,3 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         }
     }
 }
-
-
-
