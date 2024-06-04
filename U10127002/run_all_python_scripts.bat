@@ -1,5 +1,13 @@
 @echo off
-REM 這個批處理文件將依次運行三個 Python 腳本
+
+echo Install Python Necessary package
+python install_packages.py
+if %errorlevel% neq 0 (
+    echo Error running install_packages.py
+    pause
+    exit /b %errorlevel%
+)
+
 
 echo Running fetch_and_upload_movies.py
 python fetch_and_upload_movies.py
