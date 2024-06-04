@@ -28,7 +28,8 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
-    private DatabaseReference database;
+    private DatabaseReference usersDatabase;
+    private DatabaseReference ownerDatabase;
     private VideoView videoView;
     private FirebaseStorage storage;
     private List<String> videoUrls = new ArrayList<>();
@@ -38,7 +39,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        database = FirebaseDatabase.getInstance().getReference("users");
+        usersDatabase = FirebaseDatabase.getInstance().getReference("users");
+        ownerDatabase = FirebaseDatabase.getInstance().getReference("owner");
         storage = FirebaseStorage.getInstance();
         videoView = findViewById(R.id.videoView);
 
@@ -137,7 +139,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loginUser(final String username, final String password) {
-        database.child(username).addListenerForSingleValueEvent(new ValueEventListener() {
+        ownerDatabase.child(username).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    String ownerPassword = dataSnapshot.child("password").getValue(String.class);
+                    if (ownerPassword != null && ownerPassword.equals(password)) {
+                        Toast.makeText(MainActivity.this, "Owner login successful", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(MainActivity.this, OwnerActivity.class);
+                        startActivity(intent);
+                    } else {
+                        checkUserCredentials(username, password);
+                    }
+                } else {
+                    checkUserCredentials(username, password);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(MainActivity.this, "Database error. Please try again.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void checkUserCredentials(final String username, final String password) {
+        usersDatabase.child(username).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
